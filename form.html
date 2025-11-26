@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت اطلاعات</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        @import url('https://vazir-font.ir/css/vazir.css');
+        body {
+            font-family: 'Vazir', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: fadeIn 0.8s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        input, .slider {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 16px;
+        }
+        input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        .slider {
+            -webkit-appearance: none;
+            height: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+            outline: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+        }
+        .rating-value {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #fff;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #ff6b6b, #f9ca24);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>ثبت اطلاعات</h1>
+        
+        <div class="input-group">
+            <label>نام و نام خانوادگی</label>
+            <input type="text" id="name" placeholder="مثلاً علی رضایی" required>
+        </div>
+
+        <div class="input-group">
+            <label>شماره موبایل</label>
+            <input type="tel" id="phone" placeholder="۰۹۱۲۳۴۵۶۷۸۹" maxlength="11" required>
+        </div>
+
+        <div class="input-group">
+            <label>امتیازت به ما از ۱ تا ۱۰</label>
+            <input type="range" class="slider" id="rating" min="1" max="10" value="5">
+            <div class="rating-value" id="ratingValue">۵</div>
+        </div>
+
+        <button id="sendBtn">ارسال اطلاعات</button>
+    </div>
+
+    <script>
+        const ratingSlider = document.getElementById('rating');
+        const ratingValue = document.getElementById('ratingValue');
+        const sendBtn = document.getElementById('sendBtn');
+
+        ratingSlider.addEventListener('input', () => {
+            ratingValue.textContent = ratingSlider.value;
+        });
+
+        sendBtn.addEventListener('click', () => {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const rating = ratingSlider.value;
+
+            if (!name || !phone || phone.length !== 11 || !phone.startsWith('09')) {
+                Telegram.WebApp.showAlert('لطفاً همه فیلدها را درست پر کن!');
+                return;
+            }
+
+            const data = { name, phone, rating };
+
+            Telegram.WebApp.sendData(JSON.stringify(data));
+            Telegram.WebApp.close();
+        });
+
+        // هماهنگی با تم تلگرام
+        if (Telegram.WebApp.colorScheme === 'dark') {
+            document.body.style.background = '#000';
+        }
+    </script>
+</body>
+</html>
